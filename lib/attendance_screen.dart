@@ -332,6 +332,50 @@ class _AttendanceTrackerScreenState extends State<AttendanceTrackerScreen> {
     );
   }
 
+  // === Notice देखाउने नयाँ Widget ===
+  Widget _buildNoticeCard(String noticeText) {
+    if (noticeText.trim().isEmpty) return const SizedBox.shrink();
+    return Card(
+      color: Colors.amber.shade50,
+      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.amber.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.announcement, color: Colors.amber.shade800, size: 24),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Notice / सूचना',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    noticeText,
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -383,6 +427,9 @@ class _AttendanceTrackerScreenState extends State<AttendanceTrackerScreen> {
                   child: Center(child: CircularProgressIndicator()),
                 ),
               if (!_isLoading && _attendanceData != null) ...[
+                // Notice खाली छैन भने यहाँ देखिन्छ
+                if (_attendanceData!.notice.trim().isNotEmpty)
+                  _buildNoticeCard(_attendanceData!.notice),
                 _buildEmployeeCard(),
                 const SizedBox(height: 16),
                 _buildMonthSelector(),
@@ -852,7 +899,7 @@ class _AttendanceTrackerScreenState extends State<AttendanceTrackerScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Center(
                       child: Text(
-                        mess['mealType'] ?? '',
+                        mess['mealType']?.toString() ?? '',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

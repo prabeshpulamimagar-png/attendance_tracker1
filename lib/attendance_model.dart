@@ -19,7 +19,8 @@ class EmployeeAttendanceData {
   final String month;
   final Map<String, dynamic> summary;
   final List<AttendanceRecord> attendance;
-  final List<dynamic> messReturns;
+  final List<Map<String, dynamic>> messReturns;
+  final String notice;
 
   const EmployeeAttendanceData({
     required this.empCode,
@@ -29,6 +30,7 @@ class EmployeeAttendanceData {
     required this.summary,
     required this.attendance,
     required this.messReturns,
+    required this.notice,
   });
 
   factory EmployeeAttendanceData.fromJson(Map<String, dynamic> json) {
@@ -55,7 +57,14 @@ class EmployeeAttendanceData {
     }
 
     final rawMess = json['messReturns'];
-    final List<dynamic> messList = rawMess is List ? rawMess : [];
+    final List<Map<String, dynamic>> messList = [];
+    if (rawMess is List) {
+      for (final item in rawMess) {
+        if (item is Map) {
+          messList.add(Map<String, dynamic>.from(item));
+        }
+      }
+    }
 
     return EmployeeAttendanceData(
       empCode: json['empCode']?.toString() ?? '',
@@ -65,6 +74,7 @@ class EmployeeAttendanceData {
       summary: summaryMap,
       attendance: records,
       messReturns: messList,
+      notice: json['notice']?.toString() ?? '',
     );
   }
 }
